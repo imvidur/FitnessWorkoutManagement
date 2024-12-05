@@ -46,6 +46,7 @@ namespace FitnessWorkoutMgmnt.Controllers
             var updatedChallenge = await _challengeService.UpdateChallenge(challenge);
             return Ok(updatedChallenge);
         }
+
     }
 
 }

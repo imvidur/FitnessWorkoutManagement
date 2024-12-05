@@ -8,15 +8,10 @@ namespace FitnessWorkoutMgmnt.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class FitnessClassController : ControllerBase
+    //[Authorize]
+    public class FitnessClassController(IFitnessClassService fitnessClassService) : ControllerBase
     {
-        private readonly IFitnessClassService _fitnessClassService;
-
-        public FitnessClassController(IFitnessClassService fitnessClassService)
-        {
-            _fitnessClassService = fitnessClassService;
-        }
+        private readonly IFitnessClassService _fitnessClassService = fitnessClassService;
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FitnessClass>>> GetAllFitnessClasses()
@@ -35,8 +30,10 @@ namespace FitnessWorkoutMgmnt.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<FitnessClass>> CreateFitnessClass(FitnessClass fitnessClass)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var createdFitnessClass = await _fitnessClassService.CreateFitnessClassAsync(fitnessClass);
             return CreatedAtAction(nameof(GetFitnessClassById), new { id = createdFitnessClass.ClassId }, createdFitnessClass);
         }

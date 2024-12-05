@@ -8,17 +8,12 @@ namespace FitnessWorkoutMgmnt.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class PaymentController : ControllerBase
+    public class PaymentController(IPaymentService paymentService) : ControllerBase
     {
-        private readonly IPaymentService _paymentService;
-
-        public PaymentController(IPaymentService paymentService)
-        {
-            _paymentService = paymentService;
-        }
+        private readonly IPaymentService _paymentService = paymentService;
 
         [HttpGet]
+        [Authorize(Policy = "ClientOnly")]
         public async Task<ActionResult<IEnumerable<Payment>>> GetAllPayments()
         {
             var payments = await _paymentService.GetAllPaymentsAsync();
@@ -35,13 +30,18 @@ namespace FitnessWorkoutMgmnt.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Payment>> CreatePayment(Payment payment)
+        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ProcessPayment([FromBody] Payment payment)
         {
-            var createdPayment = await _paymentService.CreatePaymentAsync(payment);
-            return CreatedAtAction(nameof(GetPaymentById), new { id = createdPayment.Id }, createdPayment);
+            var processedPayment = await _paymentService.ProcessPayment(payment);
+            return CreatedAtAction(nameof(GetPaymentById), new { id = processedPayment.Id }, processedPayment);
         }
 
+
         [HttpPut("{id}")]
+        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePayment(int id, Payment payment)
         {
             if (id != payment.Id)
@@ -51,24 +51,13 @@ namespace FitnessWorkoutMgmnt.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePayment(int id)
         {
             await _paymentService.DeletePaymentAsync(id);
             return NoContent();
         }
 
-        [HttpPost("process")]
-        public async Task<IActionResult> ProcessPayment([FromBody] Payment payment)
-        {
-            var processedPayment = await _paymentService.ProcessPayment(payment);
-            return CreatedAtAction(nameof(GetPaymentsForUser), new { userId = payment.UserId }, processedPayment);
-        }
-
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetPaymentsForUser(int userId)
-        {
-            var payments = await _paymentService.GetPaymentsForUser(userId);
-            return Ok(payments);
-        }
     }
 }

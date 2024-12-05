@@ -105,6 +105,10 @@ namespace FitnessWorkoutMgmnt.Data
                 .WithMany(u => u.UserChallenges)
                 .HasForeignKey(uc => uc.UserId);
 
+            modelBuilder.Entity<Payment>()
+                   .Property(p => p.Amount)
+                   .HasColumnType("decimal(18,2)");
+
             modelBuilder.Entity<UserChallenge>()
                 .HasOne(uc => uc.Challenge)
                 .WithMany(c => c.UserChallenges)

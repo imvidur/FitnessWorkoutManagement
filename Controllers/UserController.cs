@@ -10,7 +10,7 @@ namespace FitnessWorkoutMgmnt.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -47,8 +47,10 @@ namespace FitnessWorkoutMgmnt.Controllers
         public async Task<IActionResult> UpdateUser(int id, User user)
         {
             if (id != user.UserId)
-                return BadRequest();
-            await _userService.UpdateUserAsync(id, user);
+                return BadRequest("User ID mismatch");
+            var updatedUser = await _userService.UpdateUserAsync(id, user);
+            if (updatedUser == null)
+                return NotFound("User not found");
             return NoContent();
         }
 

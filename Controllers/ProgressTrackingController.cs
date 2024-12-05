@@ -1,7 +1,9 @@
-﻿using FitnessWorkoutMgmnt.Models;
+﻿using FitnessWorkoutMgmnt.Data;
+using FitnessWorkoutMgmnt.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitnessWorkoutMgmnt.Controllers
 {
@@ -9,18 +11,36 @@ namespace FitnessWorkoutMgmnt.Controllers
     [ApiController]
     public class ProgressTrackingController : ControllerBase
     {
-        [Authorize(Roles = "User")]
-        [HttpGet("my-progress")]
-        public IActionResult GetMyProgress()
+        private readonly FitnessDbContext _context;
+
+
+        public ProgressTrackingController(FitnessDbContext context)
         {
-            return Ok("Your progress data.");
+            _context = context;
         }
 
-        [Authorize(Roles = "Trainer")]
-        [HttpPost("update-progress")]
-        public IActionResult UpdateClientProgress([FromBody] ProgressTracking progress)
+        // GET: api/progresstracking/my-progress
+        [HttpGet("my-progress")]
+        public async Task<IActionResult> GetMyProgress(int userId)
         {
-            return Ok("Client progress updated.");
+            var progress = await _context.ProgressTrackings
+                                         .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (progress == null)
+            {
+                return NotFound("No progress data found.");
+            }
+
+            return Ok(progress);
+        }
+
+        [HttpPost("update-progress")]
+        public async Task<IActionResult> UpdateClientProgress([FromBody] ProgressTracking progress)
+        {
+            _context.ProgressTrackings.Add(progress);
+            await _context.SaveChangesAsync();
+
+            return Ok(progress);
         }
     }
 }

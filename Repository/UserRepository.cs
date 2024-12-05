@@ -38,6 +38,11 @@ namespace FitnessWorkoutMgmnt.Repository
 
             existingUser.Username = user.Username;
             existingUser.Email = user.Email;
+            existingUser.PasswordHash = user.PasswordHash;
+            existingUser.Role = user.Role;
+            existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.IsActive = user.IsActive;
+
             // Update other fields
 
             await _context.SaveChangesAsync();

@@ -16,17 +16,17 @@ namespace FitnessWorkoutMgmnt.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
         private readonly FitnessDbContext _context;
         private readonly JwtService _jwtService;
 
-        public AuthController(IConfiguration configuration,JwtService jwtService,  FitnessDbContext context)
+        public AuthController(IConfiguration configuration, JwtService jwtService, FitnessDbContext context)
         {
-            _configuration = configuration;
+            //_configuration = configuration;
             _context = context;
             _jwtService = jwtService;
         }
-      
+
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -39,8 +39,8 @@ namespace FitnessWorkoutMgmnt.Controllers
                 return Unauthorized("Invalid credentials");
             }
 
-            var token = GenerateJwtToken(user);
-            return Ok(new { Token = token, Role = user.Role });
+            var token = _jwtService.GenerateToken(user);
+            return Ok(new { Token = token, Role = user.Role, Success=true });
         }
 
         [AllowAnonymous]
@@ -57,6 +57,7 @@ namespace FitnessWorkoutMgmnt.Controllers
                 Username = registerDto.Username,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
                 Role = registerDto.Role,
+                PhoneNumber=registerDto.PhoneNumber,
                 Email = registerDto.Email,
                 IsActive = true
             };
@@ -65,38 +66,6 @@ namespace FitnessWorkoutMgmnt.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("User registered successfully.");
-        }
-
-        private string GenerateJwtToken(User user)
-        {
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim("UserId", user.UserId.ToString())
-        };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JwtSettings:Issuer"],
-                audience: _configuration["JwtSettings:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(int.Parse(_configuration["JwtSettings:ExpirationInMinutes"])),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        [Authorize(Roles = "Trainer")]
-        [HttpPost("createWorkoutPlan")]
-        public IActionResult CreateWorkoutPlan([FromBody] WorkoutPlan plan)
-        {
-            // Logic for workout plan creation
-            return Ok();
         }
 
     }

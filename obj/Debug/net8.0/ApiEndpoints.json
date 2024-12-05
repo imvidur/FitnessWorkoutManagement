@@ -1,22 +1,6 @@
 [
   {
     "ContainingType": "FitnessWorkoutMgmnt.Controllers.AuthController",
-    "Method": "CreateWorkoutPlan",
-    "RelativePath": "api/Auth/createWorkoutPlan",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "plan",
-        "Type": "FitnessWorkoutMgmnt.Models.WorkoutPlan",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FitnessWorkoutMgmnt.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",
     "HttpMethod": "POST",
@@ -367,7 +351,7 @@
   },
   {
     "ContainingType": "FitnessWorkoutMgmnt.Controllers.PaymentController",
-    "Method": "CreatePayment",
+    "Method": "ProcessPayment",
     "RelativePath": "api/Payment",
     "HttpMethod": "POST",
     "IsController": true,
@@ -379,17 +363,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "FitnessWorkoutMgmnt.Models.Payment",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "FitnessWorkoutMgmnt.Controllers.PaymentController",
@@ -455,9 +429,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FitnessWorkoutMgmnt.Controllers.PaymentController",
-    "Method": "GetPaymentsForUser",
-    "RelativePath": "api/Payment/{userId}",
+    "ContainingType": "FitnessWorkoutMgmnt.Controllers.ProgressTrackingController",
+    "Method": "GetMyProgress",
+    "RelativePath": "api/ProgressTracking/my-progress",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -465,35 +439,9 @@
       {
         "Name": "userId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FitnessWorkoutMgmnt.Controllers.PaymentController",
-    "Method": "ProcessPayment",
-    "RelativePath": "api/Payment/process",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "payment",
-        "Type": "FitnessWorkoutMgmnt.Models.Payment",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FitnessWorkoutMgmnt.Controllers.ProgressTrackingController",
-    "Method": "GetMyProgress",
-    "RelativePath": "api/ProgressTracking/my-progress",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -724,6 +672,75 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FitnessWorkoutMgmnt.Controllers.WorkoutController",
+    "Method": "CreateWorkoutPlan",
+    "RelativePath": "api/Workout/WorkoutPlan",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "plan",
+        "Type": "FitnessWorkoutMgmnt.Models.WorkoutPlan",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FitnessWorkoutMgmnt.Controllers.WorkoutController",
+    "Method": "GetWorkoutPlan",
+    "RelativePath": "api/Workout/WorkoutPlan/{planId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "planId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FitnessWorkoutMgmnt.Controllers.WorkoutController",
+    "Method": "UpdateWorkoutPlan",
+    "RelativePath": "api/Workout/WorkoutPlan/{planId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "planId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedPlan",
+        "Type": "FitnessWorkoutMgmnt.Models.WorkoutPlan",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FitnessWorkoutMgmnt.Controllers.WorkoutController",
+    "Method": "DeleteWorkoutPlan",
+    "RelativePath": "api/Workout/WorkoutPlan/{planId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "planId",
         "Type": "System.Int32",
         "IsRequired": true
       }
